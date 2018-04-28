@@ -5,6 +5,7 @@
 2. Verify that anaconda is installed correctly.
 `conda list` should list out all of the libraries.
 3. Create the conda virtual env.  https://conda.io/docs/user-guide/tasks/manage-environments.html
+Make sure you activate the environment too. https://conda.io/docs/user-guide/tasks/manage-environments.html#activating-an-environment  
 4. Install VirtualEnv  
 `pip install --upgrade tensorflow `
 5. Install Keras  
