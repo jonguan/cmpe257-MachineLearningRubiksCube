@@ -1,12 +1,27 @@
 # cmpe257-MachineLearningRubiksCube
 
 ## Setup / Intallation Instructions
-1. Go to www.keras.io
-2. It will tell you to go to https://www.tensorflow.org/install/install_mac for mac installation
-3. Tensorflow recommends VirtualEnv, so install that
-4. After install of pip, creation of tensorflow folder, activation, and tensorflow, go back to keras
-5. `pip install keras` from tensorflow folder
-6. You may have to install numpy and other libraries.  https://www.scipy.org/install.html
+1. Install anaconda. https://docs.anaconda.com/anaconda/install/
+2. Verify that anaconda is installed correctly.
+`conda list` should list out all of the libraries.
+3. Create the conda virtual env.  https://conda.io/docs/user-guide/tasks/manage-environments.html
+4. Install VirtualEnv  
+`pip install --upgrade tensorflow `
+5. Install Keras  
+`pip install --upgrade keras`
+6.  Project may complain that python needs to run as an app.  Put this in .bashrc
+```
+function frameworkpython {
+    if [[ ! -z "$VIRTUAL_ENV" ]]; then
+        PYTHONHOME=$VIRTUAL_ENV /usr/local/bin/python "$@"
+    else
+        /usr/local/bin/python "$@"
+    fi
+}
+```
+7. `source .bashrc`
+8. There will be other libraries that may have to be installed.  Install them not in the conda env. but in the desktop env.
+
 
 ## Magic Cube
 Magic cube is a rubiks cube visualizer.  It will serve as the model for our project.
