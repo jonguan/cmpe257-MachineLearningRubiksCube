@@ -1,4 +1,8 @@
 import pycuber as pc
+import sys
+sys.path.insert(0, "./MagicCube/code")
+
+import cube
 from random import randint
 import numpy as np
 import keras
@@ -13,7 +17,7 @@ np.random.seed(1337)
 max_moves =  10
 
 
-mycube = pc.Cube()
+mycube = cube.Cube(3) #pc.Cube()
 faces = ['L','U','R','D','F','B']
 colors = ['[r]','[y]','[o]','[w]','[g]','[b]']
 possible_moves = ["R","R'","R2","U","U'","U2","F","F'","F2","D","D'","D2","B","B'","B2","L","L'","L2"]
@@ -37,49 +41,50 @@ def sol2cat(solution):
     
     
 
-def cube2np(mycube):
-    # transform cube object to np array
-    # works around the weird data type used
-    global faces
-    global colors
-    cube_np = np.zeros((6,3,3))
-    for i,face in enumerate(faces):
-        face_tmp = mycube.get_face(face)
-        for j in range(3):
-            for k in range(len(face_tmp[j])):
-                caca = face_tmp[j][k]
-                cube_np[i,j,k] = colors.index(str(caca))
-    return cube_np
+# def cube2np(mycube):
+#     # transform cube object to np array
+#     # works around the weird data type used
+#     global faces
+#     global colors
+#     cube_np = np.zeros((6,3,3))
+#     for i,face in enumerate(faces):
+#         face_tmp = mycube.get_face(face)
+#         for j in range(3):
+#             for k in range(len(face_tmp[j])):
+#                 caca = face_tmp[j][k]
+#                 cube_np[i,j,k] = colors.index(str(caca))
+#     return cube_np
 
+"""
+returns cube, solution
+"""
 def generate_game(max_moves = max_moves):
     
     # generate a single game with max number of permutations number_moves
     
-    mycube = pc.Cube()
+    mycube = cube.Cube(3)#pc.Cube()
 
     global possible_moves
     formula = []
-    cube_original = cube2np(mycube)
+    cube_original = cube.Cube(3) #cube2np(mycube)
     number_moves = max_moves#randint(3,max_moves)
     for j in range(number_moves):
         formula.append(possible_moves[randint(0,len(possible_moves)-1)])
         
     #my_formula = pc.Formula("R U R' U' D' R' F R2 U' D D R' U' R U R' D' F'")
 
-    my_formula = pc.Formula(formula)
+    sanitizedFormula = mycube.sanitize_formula(formula)
+    # print sanitizedFormula
 
+    mycube = mycube.ingest(sanitizedFormula)
 
-    mycube = mycube((my_formula))
     # use this instead if you want it in OG data type
 
-    cube_scrambled = mycube.copy()
-    
-    solution = my_formula.reverse()
+    #cube_scrambled = mycube.copy()
+    # solution
+    sanitizedFormula.reverse()
 
-    print(mycube)
-
-
-    return cube_scrambled,solution
+    return mycube.stickers,sanitizedFormula
 
 def generate_N_games(N=10,max_moves=max_moves):
     
