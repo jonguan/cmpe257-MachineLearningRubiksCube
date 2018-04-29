@@ -76,7 +76,7 @@ def generate_game(max_moves = max_moves):
     
     solution = my_formula.reverse()
 
-    #print(mycube)
+    print(mycube)
 
 
     return cube_scrambled,solution
@@ -154,41 +154,43 @@ def generate_data(N=32):
         yield (x,y)
 
 
+if __name__ == "__main__":
+
+    batch_size = 256
+    num_classes = len(possible_moves)
+    num_epochs = 150
+    input_shape = (18, 3, 1)
+
+    model = Sequential()
+    model.add(Conv2D(256, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=input_shape))
+    # model.add(Conv2D(128, kernel_size=(3, 3),
+    #                  activation='relu',
+    #                  input_shape=input_shape))
+    #model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+    model.summary()
+
+    tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
 
 
-batch_size = 256
-num_classes = len(possible_moves)
-num_epochs = 150
-input_shape = (18, 3, 1)
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=['accuracy'])
 
-model = Sequential()
-model.add(Conv2D(256, kernel_size=(3, 3),
-                 activation='relu',
-                 input_shape=input_shape))
-# model.add(Conv2D(128, kernel_size=(3, 3),
-#                  activation='relu',
-#                  input_shape=input_shape))
-#model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
-model.summary()
+    for j in range(num_epochs):
 
-tbCallBack = keras.callbacks.TensorBoard(log_dir='/home/jerpint/Dropbox/rubiks/', histogram_freq=0, write_graph=True, write_images=True)
+        if (j%10 == 0):
+            print ('epoch #',j)
+        model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
+                                      epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+    model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
-model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy'])
-
-for j in range(num_epochs): 
-    
-    if (j%10 == 0):
-        print ('epoch #',j)
-    model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
-                                  epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
-model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
 
