@@ -14,7 +14,7 @@ from keras import backend as K
 from keras.models import load_model
 
 np.random.seed(1337)
-max_moves =  10
+max_moves =  1
 
 
 mycube = cube.Cube(3) #pc.Cube()
@@ -84,7 +84,7 @@ def generate_game(max_moves = max_moves):
     # solution
     sanitizedFormula.reverse()
 
-    return mycube.stickers,sanitizedFormula
+    return mycube,sanitizedFormula
 
 def generate_N_games(N=10,max_moves=max_moves):
     
@@ -107,23 +107,26 @@ def generate_action_space(number_games=100):
     while play_game:
 
 
-        scrambled_cube,solutions = generate_game(max_moves = max_moves)
+        scrambled_cube,solutions = generate_game(1)#(max_moves = max_moves)
 
+        print scrambled_cube, solutions
 
+        state = scrambled_cube.copy()   # this is a cube object
 
-
-        state = scrambled_cube.copy()
         for j in range(len(solutions)):
-            states_hist.append(state.copy())
+            print ("j is {0}".format(j))
             action = solutions[j]
-            current_state = state.copy()
-            state_next = state(action)
+            print ("action is {0} ".format(action))
+            current_state = state.stickers.copy()
+            states_hist.append(current_state)
 
-            state_next = state_next.copy()
+            state_next = state.ingest(action)
+
+            next_stickers = state_next.stickers.copy()
 
             reward  = j+1
 
-            D.append([current_state,action,reward,state_next])
+            D.append([current_state,action,reward,next_stickers])
 
             state = state_next.copy()
 
@@ -160,40 +163,40 @@ def generate_data(N=32):
 
 
 if __name__ == "__main__":
-
-    batch_size = 256
-    num_classes = len(possible_moves)
-    num_epochs = 150
-    input_shape = (18, 3, 1)
-
-    model = Sequential()
-    model.add(Conv2D(256, kernel_size=(3, 3),
-                     activation='relu',
-                     input_shape=input_shape))
-    # model.add(Conv2D(128, kernel_size=(3, 3),
+    generate_action_space(1)
+    # batch_size = 256
+    # num_classes = len(possible_moves)
+    # num_epochs = 150
+    # input_shape = (18, 3, 1)
+    #
+    # model = Sequential()
+    # model.add(Conv2D(256, kernel_size=(3, 3),
     #                  activation='relu',
     #                  input_shape=input_shape))
-    #model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
-    model.summary()
-
-    tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
-
-
-    model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
-                  metrics=['accuracy'])
-
-    for j in range(num_epochs):
-
-        if (j%10 == 0):
-            print ('epoch #',j)
-        model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
-                                      epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
-    model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
+    # # model.add(Conv2D(128, kernel_size=(3, 3),
+    # #                  activation='relu',
+    # #                  input_shape=input_shape))
+    # #model.add(Conv2D(64, (3, 3), activation='relu'))
+    # model.add(Flatten())
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dropout(0.5))
+    # model.add(Dense(num_classes, activation='softmax'))
+    # model.summary()
+    #
+    # tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
+    #
+    #
+    # model.compile(loss=keras.losses.categorical_crossentropy,
+    #               optimizer=keras.optimizers.Adadelta(),
+    #               metrics=['accuracy'])
+    #
+    # for j in range(num_epochs):
+    #
+    #     if (j%10 == 0):
+    #         print ('epoch #',j)
+    #     model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
+    #                                   epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+    # model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
 
