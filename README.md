@@ -26,4 +26,5 @@ function frameworkpython {
 
 ## Magic Cube
 Magic cube is a rubiks cube visualizer.  It will serve as the model for our project.
-https://github.com/davidwhogg/MagicCube
+https://github.com/jonguan/MagicCube is forked from https://github.com/davidwhogg/MagicCube  
+and serves as a subdirectory for our project
