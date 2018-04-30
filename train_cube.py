@@ -148,18 +148,18 @@ def generate_data(N=32):
         x = np.asarray(x)
         x = x.reshape(x.shape[0],18, 3, 1)
         x = x.astype('float32')
-        print x
 
         y = np.asarray(y)
+        print "x is %s, y is %s" % (x,y)
+
         y = y.reshape(y.shape[0],y.shape[2] )
-        print y
-        
+
         yield (x,y)
 
 
 if __name__ == "__main__":
-
-    generator = generate_data(10)
+    # print generate_action_space(1)
+    generator = generate_data(1)
     generator.next()
 
     # batch_size = 256
