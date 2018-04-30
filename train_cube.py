@@ -93,7 +93,7 @@ def generate_action_space(number_games=100):
 
 
         scrambled_cube,solutions = generate_game(max_moves = max_moves)
-        print "Solutions %s" % solutions
+        # print "Solutions %s" % solutions
         # print scrambled_cube, solutions
 
         state = scrambled_cube   # this is a cube object
@@ -131,61 +131,64 @@ def generate_data(N=32):
         D = generate_action_space(N)
         for d in D:
             x.append(d[0].stickers)
-            print d[0]
+            # print d[0]
             y.append(to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
-            print (to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
+            # print (to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
         x = np.asarray(x)
         x = x.reshape(x.shape[0],18, 3, 1)
         x = x.astype('float32')
 
         y = np.asarray(y)
-        print "x is %s, y is %s" % (x,y)
+        # print "xshape is %s" % str(x.shape)
 
-        y = y.reshape(y.shape[0],y.shape[2] )
-        
-        yield (x,y)
+        # print "yshape is %s" % str(y.shape)
+        y = y.reshape(y.shape[0],y.shape[1])
+
+        # print "x is %s, y is %s" % (x,y)
+
+    yield (x,y)
 
 
 if __name__ == "__main__":
 #test
-    print generate_action_space(1)
+    # print generate_action_space(1)
 
     # generator = generate_data(1)
     # generator.next()
 
-    # batch_size = 256
-    # num_classes = len(possible_moves)
-    # num_epochs = 150
-    # input_shape = (18, 3, 1)
-    #
-    # model = Sequential()
-    # model.add(Conv2D(256, kernel_size=(3, 3),
+    batch_size = 256
+    num_classes = len(possible_moves)
+    num_epochs = 150
+    input_shape = (18, 3, 1)
+
+    model = Sequential()
+    model.add(Conv2D(256, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=input_shape))
+    # model.add(Conv2D(128, kernel_size=(3, 3),
     #                  activation='relu',
     #                  input_shape=input_shape))
-    # # model.add(Conv2D(128, kernel_size=(3, 3),
-    # #                  activation='relu',
-    # #                  input_shape=input_shape))
-    # #model.add(Conv2D(64, (3, 3), activation='relu'))
-    # model.add(Flatten())
-    # model.add(Dense(128, activation='relu'))
-    # model.add(Dropout(0.5))
-    # model.add(Dense(num_classes, activation='softmax'))
-    # model.summary()
-    #
-    # tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
-    #
-    #
-    # model.compile(loss=keras.losses.categorical_crossentropy,
-    #               optimizer=keras.optimizers.Adadelta(),
-    #               metrics=['accuracy'])
-    #
-    # for j in range(num_epochs):
-    #
-    #     if (j%10 == 0):
-    #         print ('epoch #',j)
-    #     model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
-    #                                   epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
-    # model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
+    #model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+    model.summary()
+
+    tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
+
+
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=['accuracy'])
+
+    for j in range(num_epochs):
+
+        if (j%10 == 0):
+            print ('epoch #',j)
+        model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
+                                      epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+    model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
 
