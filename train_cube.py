@@ -100,7 +100,7 @@ def generate_N_games(N=10,max_moves=max_moves):
 
 def generate_action_space(number_games=100):
     D = [] # action space
-    states_hist = []
+    # states_hist = []
     game_count = 0
     play_game = True
     global max_moves
@@ -117,20 +117,19 @@ def generate_action_space(number_games=100):
             # print ("j is {0}".format(j))
             action = solutions[j]
             # print ("action is {0} ".format(action))
-            current_state = state.stickers.copy()
-            states_hist.append(current_state)
+            current_state = state.copy()
+            # states_hist.append(current_state)
 
             state_next = state.ingest(action)
+            state_next = state_next.copy()
 
-            next_stickers = state_next.stickers.copy()
+            reward = j+1
 
-            reward  = j+1
-
-            D.append([current_state,action,reward,next_stickers])
+            D.append([current_state,action,reward,state_next])
 
             state = state_next.copy()
 
-        states_hist.append(state.stickers.copy())
+        # states_hist.append(state.copy())
 
         # print D
 
@@ -144,15 +143,15 @@ def generate_action_space(number_games=100):
 def generate_data(N=32):
 
     while True:
-        x  = []
+        x = []
         y = []
 
         D = generate_action_space(N)
         for d in D:
-            x.append(d[0])
-            # print d[0]
+            x.append(d[0].stickers)
+            print d[0]
             y.append(to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
-            # print (to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
+            print (to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
         x = np.asarray(x)
         x = x.reshape(x.shape[0],18, 3, 1)
         x = x.astype('float32')
@@ -169,41 +168,42 @@ def generate_data(N=32):
 if __name__ == "__main__":
 #test
     # print generate_action_space(10)
+    generator = generate_data(10)
+    generator.next()
 
-
-    batch_size = 256
-    num_classes = len(possible_moves)
-    num_epochs = 150
-    input_shape = (18, 3, 1)
-
-    model = Sequential()
-    model.add(Conv2D(256, kernel_size=(3, 3),
-                     activation='relu',
-                     input_shape=input_shape))
-    # model.add(Conv2D(128, kernel_size=(3, 3),
+    # batch_size = 256
+    # num_classes = len(possible_moves)
+    # num_epochs = 150
+    # input_shape = (18, 3, 1)
+    #
+    # model = Sequential()
+    # model.add(Conv2D(256, kernel_size=(3, 3),
     #                  activation='relu',
     #                  input_shape=input_shape))
-    #model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
-    model.summary()
-
-    tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
-
-
-    model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
-                  metrics=['accuracy'])
-
-    for j in range(num_epochs):
-
-        if (j%10 == 0):
-            print ('epoch #',j)
-        model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
-                                      epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
-    model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
+    # # model.add(Conv2D(128, kernel_size=(3, 3),
+    # #                  activation='relu',
+    # #                  input_shape=input_shape))
+    # #model.add(Conv2D(64, (3, 3), activation='relu'))
+    # model.add(Flatten())
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dropout(0.5))
+    # model.add(Dense(num_classes, activation='softmax'))
+    # model.summary()
+    #
+    # tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
+    #
+    #
+    # model.compile(loss=keras.losses.categorical_crossentropy,
+    #               optimizer=keras.optimizers.Adadelta(),
+    #               metrics=['accuracy'])
+    #
+    # for j in range(num_epochs):
+    #
+    #     if (j%10 == 0):
+    #         print ('epoch #',j)
+    #     model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
+    #                                   epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+    # model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
 
