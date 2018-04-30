@@ -102,8 +102,8 @@ def generate_action_space(number_games=100):
             action = solutions[j]
             current_state = state.copy()
 
-            state_next = state.ingest(action)
-            state_next = state_next.copy()
+            nextState = state.ingest(action)
+            state_next = nextState.copy()
 
             reward = j+1
 
@@ -148,10 +148,10 @@ def generate_data(N=32):
 
 if __name__ == "__main__":
 #test
-    # print generate_action_space(1)
+    print generate_action_space(1)
 
-    generator = generate_data(1)
-    generator.next()
+    # generator = generate_data(1)
+    # generator.next()
 
     # batch_size = 256
     # num_classes = len(possible_moves)
