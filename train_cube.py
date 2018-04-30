@@ -38,22 +38,7 @@ def sol2cat(solution):
     sol_cat = to_categorical(sol_tmp)
     
     return sol_cat
-    
-    
 
-# def cube2np(mycube):
-#     # transform cube object to np array
-#     # works around the weird data type used
-#     global faces
-#     global colors
-#     cube_np = np.zeros((6,3,3))
-#     for i,face in enumerate(faces):
-#         face_tmp = mycube.get_face(face)
-#         for j in range(3):
-#             for k in range(len(face_tmp[j])):
-#                 caca = face_tmp[j][k]
-#                 cube_np[i,j,k] = colors.index(str(caca))
-#     return cube_np
 
 """
 returns cube, solution
