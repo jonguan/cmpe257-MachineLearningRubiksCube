@@ -10,7 +10,7 @@ from keras import backend as K
 from keras.models import load_model
 
 np.random.seed(1337)
-max_moves =  10
+max_moves = 10
 
 
 mycube = pc.Cube()
@@ -151,9 +151,7 @@ def generate_data(N=32):
 
         y = np.asarray(y)
         # print "x is %s, y is %s" % (x,y)
-
-        y = y.reshape(y.shape[0],y.shape[1])
-
+        y = y.reshape(y.shape[0], y.shape[1])
         yield (x,y)
 
 
@@ -181,7 +179,7 @@ if __name__ == "__main__":
     model.add(Dense(num_classes, activation='softmax'))
     model.summary()
 
-    tbCallBack = keras.callbacks.TensorBoard(log_dir='/home/jerpint/Dropbox/rubiks/', histogram_freq=0, write_graph=True, write_images=True)
+    tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
 
 
     model.compile(loss=keras.losses.categorical_crossentropy,
