@@ -14,7 +14,7 @@ from keras import backend as K
 from keras.models import load_model
 
 np.random.seed(1337)
-max_moves =  10
+max_moves = 10
 
 
 mycube = cube.Cube(3) #pc.Cube()
@@ -82,9 +82,9 @@ def generate_game(max_moves = max_moves):
 
     #cube_scrambled = mycube.copy()
     # solution
-    sanitizedFormula.reverse()
+    solution = mycube.reverseFormula(sanitizedFormula)
 
-    return mycube,sanitizedFormula
+    return mycube,solution
 
 def generate_N_games(N=10,max_moves=max_moves):
     
@@ -108,17 +108,14 @@ def generate_action_space(number_games=100):
 
 
         scrambled_cube,solutions = generate_game(max_moves = max_moves)
-
+        print "Solutions %s" % solutions
         # print scrambled_cube, solutions
 
-        state = scrambled_cube.copy()   # this is a cube object
+        state = scrambled_cube   # this is a cube object
 
         for j in range(len(solutions)):
-            # print ("j is {0}".format(j))
             action = solutions[j]
-            # print ("action is {0} ".format(action))
             current_state = state.copy()
-            # states_hist.append(current_state)
 
             state_next = state.ingest(action)
             state_next = state_next.copy()
@@ -127,7 +124,7 @@ def generate_action_space(number_games=100):
 
             D.append([current_state,action,reward,state_next])
 
-            state = state_next.copy()
+            # state = state_next
 
         # states_hist.append(state.copy())
 
@@ -135,7 +132,7 @@ def generate_action_space(number_games=100):
 
         game_count+=1
 
-        if game_count>=number_games:
+        if game_count >= number_games:
             break
             
     return D
@@ -167,9 +164,10 @@ def generate_data(N=32):
 
 if __name__ == "__main__":
 #test
-    # print generate_action_space(10)
-    generator = generate_data(10)
-    generator.next()
+    print generate_action_space(1)
+
+    # generator = generate_data(10)
+    # generator.next()
 
     # batch_size = 256
     # num_classes = len(possible_moves)
