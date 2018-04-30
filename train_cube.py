@@ -137,22 +137,21 @@ def generate_data(N=32):
         x = np.asarray(x)
         x = x.reshape(x.shape[0],18, 3, 1)
         x = x.astype('float32')
-        print x
 
         y = np.asarray(y)
-        print y
-        y = y.reshape(y.shape[0],y.shape[2] )
+        print "x is %s, y is %s" % (x,y)
 
+        y = y.reshape(y.shape[0],y.shape[2] )
         
         yield (x,y)
 
 
 if __name__ == "__main__":
 #test
-    print generate_action_space(1)
+    # print generate_action_space(1)
 
-    # generator = generate_data(10)
-    # generator.next()
+    generator = generate_data(1)
+    generator.next()
 
     # batch_size = 256
     # num_classes = len(possible_moves)
