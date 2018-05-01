@@ -166,15 +166,21 @@ if __name__ == "__main__":
     model = Sequential()
     model.add(Conv2D(256, kernel_size=(3, 3),
                      activation='relu',
-                     input_shape=input_shape))
+                     input_shape=input_shape,
+                     kernel_regularizer=regularizers.l2(0.0001),
+                     activity_regularizer=regularizers.l1(0.0000)))
     # model.add(Conv2D(128, kernel_size=(3, 3),
     #                  activation='relu',
     #                  input_shape=input_shape))
     #model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+    model.add(Dense(128, activation='relu',
+                    kernel_regularizer=regularizers.l2(0.0001),
+                    activity_regularizer=regularizers.l1(0.000)))
     model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(num_classes, activation='softmax',
+                    kernel_regularizer=regularizers.l2(0.000),
+                    activity_regularizer=regularizers.l1(0.000)))
     model.summary()
 
     tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
@@ -188,9 +194,9 @@ if __name__ == "__main__":
 
         # if (j%10 == 0):
         print ('epoch #',j)
-        model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
+        model.fit_generator(generator= generate_data(256),steps_per_epoch=64,
                                       epochs=1,verbose=2,
-                            validation_data=generate_data(8),validation_steps=8,
+                            validation_data=generate_data(32),validation_steps=8,
                             max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
     model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
