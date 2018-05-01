@@ -15,7 +15,7 @@ from keras import backend as K
 from keras.models import load_model
 
 np.random.seed(1337)
-max_moves = 10
+max_moves = 12
 
 
 mycube = cube.Cube(3) #pc.Cube()
@@ -195,9 +195,10 @@ if __name__ == "__main__":
         # if (j%10 == 0):
         print ('epoch #',j)
         model.fit_generator(generator= generate_data(256),steps_per_epoch=64,
-                                      epochs=1,verbose=2,
+                                      epochs=4,verbose=2,
                             validation_data=generate_data(32),validation_steps=8,
-                            max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+                            max_queue_size=1,use_multiprocessing=True,
+                            workers=6,initial_epoch =0)#generate_data(8)
     model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
