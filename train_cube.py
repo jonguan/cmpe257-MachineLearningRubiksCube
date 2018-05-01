@@ -18,6 +18,7 @@ np.random.seed(1337)
 max_moves = 12
 
 
+
 mycube = cube.Cube(3) #pc.Cube()
 faces = ['L','U','R','D','F','B']
 colors = ['[r]','[y]','[o]','[w]','[g]','[b]']
@@ -136,6 +137,7 @@ def generate_data(N=32):
             y.append(to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
             # print (to_categorical(possible_moves.index((str(d[1]))),len(possible_moves)))
 
+
         x = np.asarray(x)
         x = x.reshape(x.shape[0],18, 3, 1)
         x = x.astype('float32')
@@ -160,7 +162,7 @@ if __name__ == "__main__":
 
     batch_size = 256
     num_classes = len(possible_moves)
-    num_epochs = 150
+    num_epochs = 5
     input_shape = (18, 3, 1)
 
     model = Sequential()
@@ -200,9 +202,3 @@ if __name__ == "__main__":
                             max_queue_size=1,use_multiprocessing=True,
                             workers=6,initial_epoch =0)#generate_data(8)
     model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
-
-
-
-
-
-
