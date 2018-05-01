@@ -10,6 +10,7 @@ from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras import regularizers
 from keras import backend as K
 from keras.models import load_model
 
@@ -171,7 +172,7 @@ if __name__ == "__main__":
     #                  input_shape=input_shape))
     #model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
     model.summary()
@@ -188,7 +189,9 @@ if __name__ == "__main__":
         # if (j%10 == 0):
         print ('epoch #',j)
         model.fit_generator(generator= generate_data(64),steps_per_epoch=50,
-                                      epochs=1,verbose=2,validation_data=None,max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
+                                      epochs=1,verbose=2,
+                            validation_data=generate_data(8),validation_steps=8,
+                            max_queue_size=1,use_multiprocessing=True,workers=6,initial_epoch =0)#generate_data(8)
     model.save('rubiks_model_wtvr.h5')  # creates a HDF5 file 'my_model.h5'
 
 
