@@ -15,7 +15,7 @@ from keras import backend as K
 from keras.models import load_model
 
 np.random.seed(1337)
-max_moves = 12
+max_moves = 20
 
 
 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     batch_size = 256
     num_classes = len(possible_moves)
-    num_epochs = 5
+    num_epochs = 10
     input_shape = (18, 3, 1)
 
     model = Sequential()
